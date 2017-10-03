@@ -5,6 +5,7 @@
  */
 package tictactoe;
 import java.awt.Color;
+import java.awt.event.MouseEvent;
 import studijosKTU.ScreenKTU;
 
 /**
@@ -12,8 +13,19 @@ import studijosKTU.ScreenKTU;
  * @author Laptopas
  */
 public class TicTacToe extends ScreenKTU {
-private byte [][] playingField;
-private static final int gameSize = 3;
+    
+    private final byte X = 1;
+    private final byte O = 2;
+    
+    private Boolean whiteTurn = true;
+    private byte won = 0;private byte [][] playingField;
+    private static final int gameSize = 3;
+
+    private static final char X_IMAGE = 0x0078;
+    private static final char O_IMAGE = 0x25CB;
+
+    private final byte EMPTY = 0;
+    private byte turns = 1;
 
     private static final Color[] cellColors = {Color.lightGray, Color.gray};
     private static final Color[] drColors = {Color.yellow, Color.black};
@@ -22,17 +34,88 @@ private static final int gameSize = 3;
         super (200, 3);
         playingField = board;
         drawBoard();
+       // startScreen();
         
     }
         final void drawBoard(){
-        setBackColor(Color.GREEN);
+       // setBackColor(Color.GREEN);
         //print(0, 0, "PLAY");
+
         for(int i = 0; i < gameSize; i++) 
             for(int j = 0; j < gameSize; j++){
                 setColors(cellColors[(i+j)&1], drColors[(playingField[i][j]+2)/2-1]);
                 print(startRow+i, startCol+j,' ');
             }
         refresh();
+    }
+         @Override
+    public void mouseClicked(MouseEvent e) {
+        if(won == 0) {
+        int r = e.getY() / cellH;
+        int c = e.getX() / cellW;
+        if(r >= startRow && r < startRow + gameSize &&
+           c >= startCol && c < startCol + gameSize ) {
+            int i = r-startRow;
+            int j = c-startCol;
+            if(playingField[i][j] == EMPTY) { 
+                if(whiteTurn) {
+                    playingField[i][j] = O;
+                    //setBackColor();
+                    print(r, c, O_IMAGE);
+                    checkIfWon(O, O_IMAGE);
+                    turns++;
+                }
+                else { 
+                    playingField[i][j] = X;
+                    print(r, c, X_IMAGE);
+                    checkIfWon(X, X_IMAGE);
+                    turns++;
+                }
+                whiteTurn = !whiteTurn;
+            }
+            refresh(80);
+            }
+        }
+    }
+    void checkIfWon(byte current, char currentImage) {
+        for (int i = 0; i < gameSize; i++) {
+            if( playingField[i][0] == current &&
+                playingField[i][1] == current &&
+                playingField[i][2] == current) {
+               won = current;
+            }
+            if( playingField[0][i] == current &&
+                playingField[1][i] == current &&
+                playingField[2][i] == current) {
+               won = current;
+            }
+        }
+        if( ( playingField[0][0] == current &&
+            playingField[1][1] == current &&
+            playingField[2][2] == current ) ||
+            ( playingField[2][0] == current &&
+            playingField[1][1] == current &&
+            playingField[0][2] == current) ) {
+               won = current;
+        }
+        if(won == current)
+            changeScreen(currentImage);
+        else if(turns == 9)
+            changeScreen('t');
+    }
+    void changeScreen(char current) {
+        for (int i = 0; i < gameSize; i++) {
+            for (int j = 0; j < gameSize; j++) {
+                print(startRow+i, startCol+j, " ");
+            }
+        }
+        if(current == 't')
+            print(1 ,0 , "tie");
+        else {
+            print(2 ,0 , "won");
+            print(0 ,1 , current);
+        }
+
     }
     /**
      * @param args the command line arguments
