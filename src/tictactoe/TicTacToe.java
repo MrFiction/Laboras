@@ -21,29 +21,27 @@ public class TicTacToe extends ScreenKTU {
     private byte won = 0;private byte [][] playingField;
     private static final int gameSize = 3;
 
-    private static final char X_IMAGE = 0x0078;
+    private static final char X_IMAGE = 0x2613;
     private static final char O_IMAGE = 0x25CB;
 
     private final byte EMPTY = 0;
     private byte turns = 1;
 
     private static final Color[] cellColors = {Color.lightGray, Color.gray};
-    private static final Color[] drColors = {Color.yellow, Color.black};
+    private static final Color symbolColor = Color.black;
     int startRow = 0, startCol = 0;  
     public TicTacToe(byte[][] board){
         super (200, 3);
         playingField = board;
+        setFontColor(symbolColor);
         drawBoard();
-       // startScreen();
+      
         
     }
         final void drawBoard(){
-       // setBackColor(Color.GREEN);
-        //print(0, 0, "PLAY");
-
         for(int i = 0; i < gameSize; i++) 
             for(int j = 0; j < gameSize; j++){
-                setColors(cellColors[(i+j)&1], drColors[(playingField[i][j]+2)/2-1]);
+                setBackColor(cellColors[(i+j)&1]);
                 print(startRow+i, startCol+j,' ');
             }
         refresh();
@@ -58,9 +56,9 @@ public class TicTacToe extends ScreenKTU {
             int i = r-startRow;
             int j = c-startCol;
             if(playingField[i][j] == EMPTY) { 
+                setBackColor(cellColors[(i+j)&1]);
                 if(whiteTurn) {
                     playingField[i][j] = O;
-                    //setBackColor();
                     print(r, c, O_IMAGE);
                     checkIfWon(O, O_IMAGE);
                     turns++;
@@ -73,7 +71,7 @@ public class TicTacToe extends ScreenKTU {
                 }
                 whiteTurn = !whiteTurn;
             }
-            refresh(80);
+            refresh();
             }
         }
     }
