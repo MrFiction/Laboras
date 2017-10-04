@@ -17,7 +17,7 @@ public class TicTacToe extends ScreenKTU {
     private final byte X = 1;
     private final byte O = 2;
     
-    private Boolean whiteTurn = true;
+    private Boolean oTurn = false;
     private byte won = 0;private byte [][] playingField;
     private static final int gameSize = 3;
 
@@ -57,7 +57,7 @@ public class TicTacToe extends ScreenKTU {
             int j = c-startCol;
             if(playingField[i][j] == EMPTY) { 
                 setBackColor(cellColors[(i+j)&1]);
-                if(whiteTurn) {
+                if(oTurn) {
                     playingField[i][j] = O;
                     print(r, c, O_IMAGE);
                     checkIfWon(O, O_IMAGE);
@@ -69,7 +69,7 @@ public class TicTacToe extends ScreenKTU {
                     checkIfWon(X, X_IMAGE);
                     turns++;
                 }
-                whiteTurn = !whiteTurn;
+                oTurn = !oTurn;
             }
             refresh();
             }
